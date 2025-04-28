@@ -1,4 +1,5 @@
 import numpy as np
+import math
 
 from dotenv import dotenv_values
 config = dotenv_values(".env")
@@ -55,7 +56,10 @@ class RedCell(_Cell):
 
 def create_force(a: _Cell, b: _Cell):
     # Сила с которой движется а по направлению к б
-    rx = b.position[0] - a.position[0]
-    ry = b.position[1] - a.position[1]
-    return (GRAVITATION_CONST*b.mass/(rx**2), 
-            GRAVITATION_CONST*b.mass/(ry**2))
+    rx = a.position[0] - b.position[0]
+    ry = a.position[1] - b.position[1]
+    r = math.sqrt(rx**2 + ry**2)
+    if r == 0:
+        return (0, 0) 
+    return (GRAVITATION_CONST*b.mass/(r**2) * rx, 
+            GRAVITATION_CONST*b.mass/(r**2) * ry)

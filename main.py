@@ -27,29 +27,32 @@ clock = pygame.time.Clock()
 offsetX = screen_width // 2
 offsetY = screen_heigth // 2
 
-cells = np.empty(1, dtype=object)
+cells = np.empty(10, dtype=object)
 for i in range(len(cells)):
-    if i != 0:
+    if i > 4:
         cells[i] = cell.WhiteCell(i, randint(0, screen_width), randint(0, screen_heigth), 5)
     else:
         cells[i] = cell.RedCell(i, randint(0, screen_width), randint(0, screen_heigth), 7)
 
-cell1 = cell.WhiteCell(-1, 0, 0, 10)
-cells = np.append(cells, cell1)
+#cell1 = cell.WhiteCell(-1, 0, 0, 10)
+#cells = np.append(cells, cell1)
 
 
 
 
 
 for i in cells:
-        if i.get_color() == 'white':
-            
+    for j in cells: 
+        vector = cell.create_force(i, j)
+        j.add_force(i.get_id(), vector)  
+
+        '''
+        if i.get_color() == 'white':    
             for j in cells:
                 if j.get_color() == 'red':
-
                     vector = cell.create_force(i, j)
                     j.add_force(i.get_id(), vector)  
-
+        '''
 
 
 
@@ -72,21 +75,17 @@ while True:
     
 
     # Отрисовка пользовательской клетки (статичной)
-    x, y = pygame.mouse.get_pos()
-    cell1.position = (x, y)
-    pygame.draw.circle(screen, cell1.get_color(), (x, y), cell1.radius)
+    #x, y = pygame.mouse.get_pos()
+    #cell1.position = (x, y)
+    #pygame.draw.circle(screen, cell1.get_color(), (x, y), cell1.radius)
 
     
-    for i in cells:
-
-        # Измененния сил, действующих на клетку
-        if i.get_color() == 'white':    
-            for j in cells:
-                if j.get_color() == 'red':
-                    vector = ( 1/(i.position[0] - j.position[0]), 1/(i.position[1] - j.position[1]))
-                    j.change_force(i.get_id(), vector)
+    for i in cells:  
+        for j in cells:
+            vector = cell.create_force(i, j)
+            j.change_force(i.get_id(), vector)     
                     
-
+    for i in cells:
         # Выполнить движение клетки с учетом всех сил
         i.move()
         # Отрисовать новое положениее клетки
