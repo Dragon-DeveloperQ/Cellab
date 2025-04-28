@@ -27,9 +27,9 @@ clock = pygame.time.Clock()
 offsetX = screen_width // 2
 offsetY = screen_heigth // 2
 
-cells = np.empty(10, dtype=object)
+cells = np.empty(1, dtype=object)
 for i in range(len(cells)):
-    if i != 1:
+    if i != 0:
         cells[i] = cell.WhiteCell(i, randint(0, screen_width), randint(0, screen_heigth), 5)
     else:
         cells[i] = cell.RedCell(i, randint(0, screen_width), randint(0, screen_heigth), 7)
@@ -46,7 +46,8 @@ for i in cells:
             
             for j in cells:
                 if j.get_color() == 'red':
-                    vector = ( 1/(abs(i.position[0] - j.position[0])**2), 1/(abs(i.position[1] - j.position[1])**2))
+
+                    vector = cell.create_force(i, j)
                     j.add_force(i.get_id(), vector)  
 
 
