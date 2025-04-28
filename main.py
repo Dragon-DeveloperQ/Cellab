@@ -1,6 +1,7 @@
 import pygame
 import sys
-import math
+import numpy as np
+from random import randint
 from dotenv import dotenv_values
 
 import cell
@@ -26,8 +27,13 @@ offsetX = screen_width // 2
 offsetY = screen_heigth // 2
 
 cell1 = cell.WhiteCell(0, 0, 10)
-cell3 = cell.WhiteCell(offsetX + 50, offsetY + 30, 10)
-cell2 = cell.RedCell(offsetX, offsetY, 10)
+
+cells = np.empty(10, dtype=object)
+for i in range(len(cells)):
+    if i <= 5:
+        cells[i] = cell.WhiteCell(randint(0, screen_width), randint(0, screen_heigth), 5)
+    else:
+        cells[i] = cell.RedCell(randint(0, screen_width), randint(0, screen_heigth), 7)
 
 
 # Инициализация цикла жизни
@@ -47,8 +53,8 @@ while True:
     x, y = pygame.mouse.get_pos()
     #pygame.draw.circle(screen, "white", (math.sin(time)*100 + offsetX, math.cos(time)*100 + offsetY), 10)
     pygame.draw.circle(screen, cell1.get_color(), (x, y), cell1.radius)
-    pygame.draw.circle(screen, cell3.get_color(), cell3.position, cell3.radius)
-    pygame.draw.circle(screen, cell2.get_color(), cell2.position, cell2.radius)
+    for i in cells:
+        pygame.draw.circle(screen, i.get_color(), i.position, i.radius)
     
     # Обновление кадра
     pygame.display.flip()
